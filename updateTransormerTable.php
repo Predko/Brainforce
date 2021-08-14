@@ -1,8 +1,7 @@
+<?php
 // Скрипт обновления данных в базе данных .
 // Если базы данных и таблицы $nameTransormerTable нет
-
-
-<?php
+// они будут созданы, после чего будут заполнены из файла прайса.
 
 use \Database\Database;
 use \PriceData\PriceData;
@@ -29,7 +28,7 @@ try
   }
 
   // Извлекаем данные из файла с прайсом.
-  $priceData = new PriceData($GLOBALS["priceFileName"]);
+  $priceData = new PriceData($GLOBALS["config"]["priceFileName"]);
 
   $data = $priceData->GetData();
 
@@ -43,5 +42,7 @@ finally
 {
   $database = null;
 }
+header ('Location: price.php');
+exit();
 
 ?>

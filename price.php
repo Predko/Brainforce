@@ -22,7 +22,10 @@ try
   $data = $database->Select($transformerSelect);
 }
 catch (PDOException $e) {
-    echo "Database error: " . $e->getMessage();
+  $content = "<h1>Ошибка открытия базы данных: " . $e->getMessage() .
+             "<br>Попробуйте загрузить прайс</h1>";
+
+  return include "templates/layout.php";
 }
 finally
 {

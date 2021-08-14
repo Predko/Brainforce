@@ -103,7 +103,7 @@ class Database
   {
     try
     {
-      $this->Open();
+      $this->connection = new PDO("mysql:host=localhost", $this->user, $this->password);
 
       $query = "CREATE DATABASE " . $this->nameDatabase;
 
@@ -147,12 +147,16 @@ class Database
 
   public function IsDatabaseExist():bool
   {
-    $query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '" .
-                                                      $this->nameDatabase . "'";
+    $sqlQuery = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '" .
+                                                      $this->nameDatabase . "';";
 
-    $result = $this->Query($query);
+    $this->connection = new PDO("mysql:host=localhost", $this->user, $this->password);
 
-    return $result;
+    $result = $this->connection->query($sqlQuery)->fetchAll();
+
+    $this->Close();
+
+    return $result != false;
   }
   
   public function IsTableExist(string $name):bool
@@ -161,17 +165,18 @@ class Database
            "WHERE TABLE_SCHEMA = '$this->nameDatabase' " .
            "AND TABLE_NAME  = '$name'";
 
+    $this->Open();
+
     $result = $this->Query($query);
+
+    $this->Close();
 
     return $result != false;
   }
 
   private function Query($query)
   {
-    if(!$this->connection)
-    {
-      $this->Open();
-    }
+    $this->Open();
 
     $result = $this->connection->query($query)->fetchAll();
 
