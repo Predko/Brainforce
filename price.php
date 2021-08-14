@@ -75,6 +75,7 @@ $table->AddRowThead($columnsName);
 $mediumRetail = round($sumRetail / count($data), 2);
 $mediumWholesale = round($sumWholesale / count($data), 2);
 
+// Информация о записях.
 $footerColumns = [
   count($data) . " записей",
   "Средняя цена: $mediumRetail",
