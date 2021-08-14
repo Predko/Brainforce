@@ -59,8 +59,8 @@ function MaxMinSumValues($values, $key)
 
   $inStock = $inStock1 + $inStock2;
 
-  $sumRetail += $values[TRANSFORMER_RETAIL] * $inStock;
-  $sumWholesale += $values[TRANSFORMER_WHOLESALE] * $inStock;
+  $sumRetail += $values[TRANSFORMER_RETAIL];
+  $sumWholesale += $values[TRANSFORMER_WHOLESALE];
 }
 
 array_walk($data, "MaxMinSumValues");
@@ -72,11 +72,11 @@ $table->Create($title, ["price"], null);
 // Массив заголовков таблицы.
 $table->AddRowThead($columnsName);
 
-$mediumRetail = $sumRetail / ($inStock1 + $inStock2);
-$mediumWholesale = $sumWholesale / ($inStock1 + $inStock2);
+$mediumRetail = round($sumRetail / count($data), 2);
+$mediumWholesale = round($sumWholesale / count($data), 2);
 
 $footerColumns = [
-  "",
+  count($data) . " записей",
   "Средняя цена: $mediumRetail",
   "Средняя цена: $mediumWholesale",
   "Всего: $inStock1",
