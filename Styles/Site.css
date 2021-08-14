@@ -1,20 +1,51 @@
-/* * {
-	padding: 0;
-	margin: 0;
-}
- */
-/* *,
-*::before,
-*::after {
-    box-sizing: border-box;
-} */
+:root {
+  --background-color-body: rgb(240, 207, 164);
+  --background-color-menu-hover: rgb(252, 195, 110);
+  --background-color-footer: rgb(205,149,117);
+  --background-color-price-head: rgb(233, 189, 132);
+  --background-color-price-item1: rgb(230, 180, 116);
+  --background-color-price-item2: rgb(240, 202, 154);
+  --background-color-price-item-hover: rgb(236, 255, 168);
+  --background-color-price-row-max-value: rgb(255, 68, 68);
+  --background-color-price-row-min-value: rgb(68, 255, 109);
+  --background-color-price-row-max-value-hover: rgb(255, 134, 134);
+  --background-color-price-row-min-value-hover: rgb(153, 255, 175);
 
-body {
-  background-color: rgb(240, 207, 164);
+  --border-color-table: rgb(131, 72, 18);
+
+  --height-footer: 3rem;
+  --height-header: 3rem;
+  --height-main: calc(100vh - var(--height-footer) - var(--height-header));
+} 
+ 
+ *,
+ *::before,
+ *::after {
+     box-sizing: border-box;
+     margin: 0;
+ }
+ 
+ body {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-color-body);
   width: 100%;
   margin: 0;
-  margin-top: 4rem;
-  margin-bottom: 4rem;
+}
+
+main {
+  height: var(--height-main);
+  width: 100vw;
+}
+
+footer {
+  height: var(--height-footer);
+  width: 100%;
+}
+
+header {
+  height: var(--height-header);
+  width: 100%;
 }
 
 footer,
@@ -23,30 +54,23 @@ header {
   margin: 0;
 }
 
-header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-
-footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-}
-
 footer p {
+  margin: 1rem;
   text-align: center;
 }
 
 .header,
 .footer {
-  background-color: rgb(205,149,117);
+  background-color: var(--background-color-footer);
+}
+
+footer {
+  align-items: center;
 }
 
 .main-menu {
   display: block;
-  background-color: rgb(205,149,117);
+  background-color: var(--background-color-footer);
   font-size: 1.5rem;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Verdana, sans-serif;
@@ -65,7 +89,7 @@ nav.main-menu li {
 }
 
 nav.main-menu li:hover {
-  background-color: rgb(252, 195, 110);
+  background-color: var(--background-color-menu-hover);
 }
 
 nav.main-menu li a {
@@ -86,9 +110,95 @@ section.main-page h1 {
   margin: 1rem;
 }
 
+section.main-page {
+  overflow-y: auto;
+  height: 300px;
+  display: block;
+}
+
 #mainpage-info {
   display: block;
   position: absolute;
   left: 50%;
   transform: translate(-50%, 0);
+}
+
+#divTable {
+  overflow-y: auto;
+  height: var(--height-main);
+  border: 2px solid var(--border-color-table);
+  flex: 1;
+}
+
+table.price {
+  width: auto;
+  height: auto;
+  top: 0;
+  border-spacing: 0;
+}
+
+.price {
+  width: 100%;
+  height: 100%;
+  border-collapse: separate;
+  border: 0px solid var(--border-color-table);
+}
+
+.price thead, th {
+  position: -webkit-sticky;
+  position: -moz-sticky;
+  position: -ms-sticky;
+  position: -o-sticky;
+  position: sticky;
+  top: 0px;
+  border-bottom: 2px solid var(--border-color-table);
+  background-color: var(--background-color-price-head);
+}
+
+.price tfoot, tfoot td {
+  position: -webkit-sticky;
+  position: -moz-sticky;
+  position: -ms-sticky;
+  position: -o-sticky;
+  position: sticky;
+  bottom: 0px;
+  border-top: 2px solid var(--border-color-table);
+  background-color: var(--background-color-price-head);
+}
+
+.price th, td {
+  padding: 3px;
+  min-width: 10em;
+}
+
+.price th:not(:first-child), td:not(:first-child) {
+  border-left: 1px solid var(--border-color-table);
+}
+
+.price tr:nth-child(even) {
+  background: var(--background-color-price-item1);
+}
+
+.price tr:nth-child(odd) {
+  background: var(--background-color-price-item2);
+}
+
+.price tbody tr:hover {
+  background-color: var(--background-color-price-item-hover);
+}
+
+.price tr.row-max-value {
+  background-color: var(--background-color-price-row-max-value);
+}
+
+.price tr.row-min-value {
+  background-color: var(--background-color-price-row-min-value);
+}
+
+.price tr.row-max-value:hover {
+  background-color: var(--background-color-price-row-max-value-hover);
+}
+
+.price tr.row-min-value:hover {
+  background-color: var(--background-color-price-row-min-value-hover);
 }

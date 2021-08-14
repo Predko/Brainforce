@@ -1,3 +1,7 @@
+// Скрипт обновления данных в базе данных .
+// Если базы данных и таблицы $nameTransormerTable нет
+
+
 <?php
 
 use \Database\Database;
@@ -10,7 +14,9 @@ include "DataTables/transformer.php";
 
 try
 {
-  $database = new Database("Prices", "brainforce", "123456");
+  $mysql = $GLOBALS["config"]["mysql"];
+  
+  $database = new Database($mysql["host"], $mysql["dbname"], $mysql["username"], $mysql["password"]);
 
   if ($database->IsDatabaseExist() == false)
   {
@@ -23,7 +29,7 @@ try
   }
 
   // Извлекаем данные из файла с прайсом.
-  $priceData = new PriceData('xls/pricelist.xls');
+  $priceData = new PriceData($GLOBALS["priceFileName"]);
 
   $data = $priceData->GetData();
 

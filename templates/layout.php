@@ -16,12 +16,14 @@
     </nav>
   </header>
 
+  <main>
   <?php
     echo $content;
   ?>
+  </main>
 
   <footer class="footer">
-      <div>
+      <div class="content-footer">
           <p>Разработано Предко Виктором. 2021 г.</p>
       </div>
   </footer>

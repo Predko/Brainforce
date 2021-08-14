@@ -13,6 +13,7 @@ class PriceData
   // Ридер для файла.
   private $reader;
 
+  // Инициализирует ридер.
   public function __construct($fileName)
   {
     $this->inputFileName = $fileName;
@@ -24,6 +25,7 @@ class PriceData
     $this->reader->setLoadSheetsOnly($worksheetNames[0]);
   }
 
+  // Возвращает данные в виде массива.
   public function GetData()
   {
     $spreadsheet = $this->reader->load($this->inputFileName);

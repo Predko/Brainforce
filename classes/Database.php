@@ -5,6 +5,7 @@ use \PDO;
 
 class Database
 {
+  private $host;
   private $nameDatabase;
   private $connectionString;
   private $connection;
@@ -14,8 +15,9 @@ class Database
   private $error;
   private $errorMessage;
 
-  public function __construct($name, $user, $password)
+  public function __construct($host, $name, $user, $password)
   {
+    $this->host = $host;
     $this->nameDatabase = $name;
 
     $this->user = $user;
@@ -58,7 +60,7 @@ class Database
 
         if ($isValid($columnValues) == false)
         {
-          // Данные не являются данными для записи в базу данных.
+          // Данные не являются данными для записи в базу.
           continue;
         }
 
@@ -181,7 +183,7 @@ class Database
   // Открываем подключение.
   private function Open()
   {
-    $this->connection = new PDO("mysql:host=localhost;dbname=$this->nameDatabase", $this->user, $this->password);
+    $this->connection = new PDO("mysql:host=$this->host;dbname=$this->nameDatabase", $this->user, $this->password);
   }
 
   // Закрываем подключение.
@@ -207,7 +209,4 @@ class Database
 
 }
 
-
-
-
- ?>
+?>
