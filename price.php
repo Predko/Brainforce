@@ -86,9 +86,6 @@ $footerColumns = [
   "",
 ];
 
-// "Cредняя розничная цена товара: $mediumRetail",
-// "Cредняя оптовая цена товара: $mediumWholesale",
-
 // Футер таблицы.
 $table->AddRowTfoot($footerColumns);
 
@@ -97,8 +94,15 @@ for ($i=0; $i < count($data); $i++)
   $table->AddRowTbody(prepareToPrint($data[$i], $maxRetailPrice, $minWholesalePrice));
 }
 
-$content = "<div id='divTable'>" .
-                $table->GetMarkup() .
+// Фильтр.
+include_once "Forms/filterform.php";
+
+$filterForm = GetFilterForm(round($minWholesalePrice, 0), round($maxRetailPrice, 0));
+
+// Формирование блока контента.
+$content =  $filterForm .
+            "<div id='table-container'>" .
+               $table->GetMarkup() .
             "</div>";
 
 include "templates/layout.php";

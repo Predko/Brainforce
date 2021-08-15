@@ -16,6 +16,8 @@
   --height-footer: 3rem;
   --height-header: 3rem;
   --height-main: calc(100vh - var(--height-footer) - var(--height-header));
+  --height-filter-form: 2rem;
+  --height-table-container: calc(var(--height-main) - var(--height-filter-form));
 } 
  
  *,
@@ -123,9 +125,28 @@ section.main-page {
   transform: translate(-50%, 0);
 }
 
-#divTable {
+#filter-form {
+  background-color: var(--background-color-body);
+  top: 0;
+  height: var(--height-filter-form);
+  padding-top: .35rem;
+}
+
+#filter-form select, input {
+  background-color: var(--background-color-body);
+}
+
+#filter-form * {
+  margin-left: 1ex;
+}
+
+#filter-form :last-child {
+  margin-left: 3ex;
+}
+
+#table-container {
   overflow-y: auto;
-  height: var(--height-main);
+  height: var(--height-table-container);
   border: 2px solid var(--border-color-table);
   flex: 1;
 }
