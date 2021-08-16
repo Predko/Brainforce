@@ -1,9 +1,8 @@
 <?php
-
 use \Database\Database;
 use \HTMLTable\HTMLTable;
 
-require_once("startup.php");
+require_once "startup.php";
 
 include "classes/HTMLTable.php";
 include "classes/Database.php";
@@ -11,17 +10,96 @@ include "DataTables/transformer.php";
 
 $title = "Прайс трансформаторов";
 
-$data = null;
+$mysql = $_SESSION["config"]["mysql"];
 
-$mysql = $GLOBALS["config"]["mysql"];
+// Фильтр.
+include_once "Forms/filterform.php";
+
+$isChanged = 0;
+
+if (isset($_POST["type"]) && $filterForm['typePrice'] != $_POST["type"])
+{
+  $filterForm['typePrice'] = $_POST["type"];
+  $isChanged++;
+}
+
+if (isset($_POST["min"]) && $filterForm['minPrice'] != $_POST["min"])
+{
+  $filterForm['minPrice'] = $_POST["min"];
+  $isChanged++;
+}
+
+if (isset($_POST["max"]) && $filterForm['maxPrice'] != $_POST["max"])
+{
+  $filterForm['maxPrice'] = $_POST["max"];
+  $isChanged++;
+}
+
+if (isset($_POST["more-or-less"]) && $filterForm['moreOrless'] != $_POST["more-or-less"])
+{
+  $filterForm['moreOrless'] = $_POST["more-or-less"];
+  $isChanged++;
+}
+
+if (isset($_POST["amount"]) && $filterForm['amount'] != $_POST["amount"])
+{
+  $filterForm['amount'] = $_POST["amount"];
+  $isChanged++;
+}
+
+if ($isChanged == 0 && isset($_POST["JSrequest"]))
+{
+  // Был отправлен запрос, но фильтр не изменился.
+  echo "NoChanged";
+  return;
+}
+
+$_SESSION['filter-form'] = $filterForm;
+
+$typePrice = $filterForm['typePrice'];
+$minPrice = $filterForm['minPrice'];
+$maxPrice = $filterForm['maxPrice'];
+$moreOrless = $filterForm['moreOrless'];
+$amount = $filterForm['amount'];
+
+$quantityCondition = "";
+
+switch ($moreOrless) 
+{
+  case 'more':
+    $quantityCondition = " AND InStock1 + InStock2 > $amount";
+    break;
+      
+  case 'less':
+    $quantityCondition = " AND InStock1 + InStock2 < $amount";
+    break;
+        
+  case 'all':
+
+  default:
+    $quantityCondition = "";
+    break;
+}
+
+$priceCondition = " $typePrice >= $minPrice AND $typePrice <= $maxPrice";
+
+$where = ($quantityCondition == "" && $priceCondition == "") ? "" : " WHERE ";
+
+$transformerSelect .= $where . $priceCondition . $quantityCondition . ";";
 
 try
 {
   $database = new Database($mysql["host"], $mysql["dbname"], $mysql["username"], $mysql["password"]);
 
+  $minMax = $database->Select($transformerSelectMinWholesaleMaxRetailPrice);
+  
+  $minWholesalePrice = floor($minMax[0][0]);
+  $maxRetailPrice = round($minMax[0][1]);
+
   $data = $database->Select($transformerSelect);
 }
-catch (PDOException $e) {
+catch (PDOException $e) 
+{
   $content = "<h1>Ошибка открытия базы данных: " . $e->getMessage() .
              "<br>Попробуйте загрузить прайс</h1>";
 
@@ -32,78 +110,67 @@ finally
   $database = null;
 }
 
-$inStock1 = 0;
-$inStock2 = 0;
-$sumRetail = 0;
-$sumWholesale = 0;
-$maxRetailPrice = 0;
-$minWholesalePrice = $data[0][TRANSFORMER_WHOLESALE];
-
-function MaxMinSumValues($values, $key)
+// Проверяем, есть ли в массиве данные.
+if (count($data) != 0)
 {
-  global $inStock1, $inStock2, $sumRetail, $sumWholesale, $maxRetailPrice, $minWholesalePrice;
-  
+  // Данные есть.
+  $currentTableInfo = new CurrentTableInfo();
+  $currentTableInfo->minWholesalePrice = $data[0][TRANSFORMER_WHOLESALE];
 
-  if ($values[TRANSFORMER_RETAIL] > $maxRetailPrice)
+  array_walk($data, array($currentTableInfo, "MaxMinSumValues"));
+
+  $table = new HTMLTable();
+
+  $table->Create("price-table", "", ["price"], null);
+
+  // Массив заголовков таблицы.
+  $table->AddRowThead($columnsName);
+
+  $mediumRetail = round($currentTableInfo->sumRetail / count($data), 2);
+  $mediumWholesale = round($currentTableInfo->sumWholesale / count($data), 2);
+
+  // Информация о записях.
+  $footerColumns = [
+    count($data) . " записей",
+    "Средняя цена: $mediumRetail",
+    "Средняя цена: $mediumWholesale",
+    "Всего: $currentTableInfo->inStock1",
+    "Всего: $currentTableInfo->inStock2",
+    "",
+    "",
+  ];
+
+  // Футер таблицы.
+  $table->AddRowTfoot($footerColumns);
+
+  for ($i=0; $i < count($data); $i++)
   {
-    $maxRetailPrice = $values[TRANSFORMER_RETAIL];
-  }
-  
-  if ($values[TRANSFORMER_WHOLESALE] < $minWholesalePrice)
-  {
-    $minWholesalePrice = $values[TRANSFORMER_WHOLESALE];
+    $table->AddRowTbody(prepareToPrint($data[$i], $currentTableInfo->maxRetailPrice, $currentTableInfo->minWholesalePrice));
   }
 
-  $inStock1 += $values[TRANSFORMER_INSTOCK1];
-  $inStock2 += $values[TRANSFORMER_INSTOCK2];
+  $tableMarkup = $table->GetMarkup();
+}
+else
+{
+  // массив пуст - сообщаем об этом.
+  $tableMarkup = "<h1>В таблице нет данных для данного фильтра</h1>";
 
-  $inStock = $inStock1 + $inStock2;
-
-  $sumRetail += $values[TRANSFORMER_RETAIL];
-  $sumWholesale += $values[TRANSFORMER_WHOLESALE];
+  $filterFormMarkup = "";
 }
 
-array_walk($data, "MaxMinSumValues");
-
-$table = new HTMLTable();
-
-$table->Create($title, ["price"], null);
-
-// Массив заголовков таблицы.
-$table->AddRowThead($columnsName);
-
-$mediumRetail = round($sumRetail / count($data), 2);
-$mediumWholesale = round($sumWholesale / count($data), 2);
-
-// Информация о записях.
-$footerColumns = [
-  count($data) . " записей",
-  "Средняя цена: $mediumRetail",
-  "Средняя цена: $mediumWholesale",
-  "Всего: $inStock1",
-  "Всего: $inStock2",
-  "",
-  "",
-];
-
-// Футер таблицы.
-$table->AddRowTfoot($footerColumns);
-
-for ($i=0; $i < count($data); $i++)
+if ($isChanged != 0)
 {
-  $table->AddRowTbody(prepareToPrint($data[$i], $maxRetailPrice, $minWholesalePrice));
+    echo $tableMarkup;
+    return;
 }
 
-// Фильтр.
-include_once "Forms/filterform.php";
-
-$filterForm = GetFilterForm(round($minWholesalePrice, 0), round($maxRetailPrice, 0));
+$filterFormMarkup = GetFilterForm(0, $maxRetailPrice, $minWholesalePrice);
 
 // Формирование блока контента.
-$content =  $filterForm .
+$content =  $filterFormMarkup .
             "<div id='table-container'>" .
-               $table->GetMarkup() .
+              $tableMarkup .
             "</div>";
 
 include "templates/layout.php";
- ?>
+?>

@@ -10,14 +10,16 @@
   --background-color-price-row-min-value: rgb(68, 255, 109);
   --background-color-price-row-max-value-hover: rgb(255, 134, 134);
   --background-color-price-row-min-value-hover: rgb(153, 255, 175);
+  --background-color-table-note-cell: rgb(163, 102, 102);
+  --color-table-note-cell: rgb(255, 255, 255);
 
   --border-color-table: rgb(131, 72, 18);
 
   --height-footer: 3rem;
   --height-header: 3rem;
   --height-main: calc(100vh - var(--height-footer) - var(--height-header));
-  --height-filter-form: 2rem;
-  --height-table-container: calc(var(--height-main) - var(--height-filter-form));
+  --height-filter-form-container: 2rem;
+  --height-table-container: calc(var(--height-main) - var(--height-filter-form-container));
 } 
  
  *,
@@ -125,22 +127,22 @@ section.main-page {
   transform: translate(-50%, 0);
 }
 
-#filter-form {
+#filter-form-container {
   background-color: var(--background-color-body);
   top: 0;
-  height: var(--height-filter-form);
+  height: var(--height-filter-form-container);
   padding-top: .35rem;
 }
 
-#filter-form select, input {
+#filter-form-container select, input {
   background-color: var(--background-color-body);
 }
 
-#filter-form * {
+#filter-form-container * {
   margin-left: 1ex;
 }
 
-#filter-form :last-child {
+#filter-form-container :last-child {
   margin-left: 3ex;
 }
 
@@ -190,6 +192,11 @@ table.price {
 .price th, td {
   padding: 3px;
   min-width: 10em;
+}
+
+.price td.table-note-cell {
+  background-color: var(--background-color-table-note-cell);
+  color: var(--color-table-note-cell);
 }
 
 .price th:not(:first-child), td:not(:first-child) {

@@ -1,7 +1,9 @@
 <?php
 session_start();
 
-$GLOBALS['config'] = [
+if (isSet($_SESSION['config']) == false)
+{
+  $_SESSION['config'] = [
     'mysql' => [
       'host' => 'localhost',
       'dbname' => 'Prices',
@@ -9,9 +11,6 @@ $GLOBALS['config'] = [
       'password' => '123456'
     ],
     'priceFileName' => 'xls/pricelist.xls', 
-];
-
-
-
-
+  ];
+}
 ?>

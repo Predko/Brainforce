@@ -19,17 +19,21 @@ class HTMLTable
   private string $endTableMarkup = "</table>";
 
   // Создаёт заготовку таблицы с указанными заголовком, классами и атрибутами.
-  public function Create($title, $classes, $attributes)
+  public function Create($id, $title, $classes, $attributes)
   {
-    $cl = "";
+    $class = "";
     if ($classes !== null and count($classes) != 0)
     {
-      $cl = 'class="' . implode(" ", $classes) . '"';
+      $class = 'class="' . implode(" ", $classes) . '"';
     }
 
-    $this->beginTableMarkup = "<table " .
-                              'title="' . $title . '" ' .
-                               $cl;
+    $title = ($title == null || $title == "") ? "" : "title='$title'";
+
+    $id = ($id == null || $id == "") ? "" : "id='$id'"; 
+
+    $this->beginTableMarkup = "<table $id " .
+                              $title .
+                              $class;
 
     if ($attributes != null and count($attributes) != 0)
     {
@@ -85,19 +89,23 @@ class HTMLTable
   // Добавляет строку в секцию tbody.
   // Принимает массив вида:
   // array = [
-  //   "class" => "",
-  //   "note" => "",
-  //   "values" => [строка-массив из базы данных]
+  //    "id" => "",
+  //    "class" => "",
+  //    далее - массив полей из строки базы данных, кроме поля Id.
+  //    "values" => [
+  //      "data" => "поле из строки базы данных", 
+  //      "class" => "CSS класс" ]
   // ]
   public function AddRowTbody($columns)
   {
-    $values = $columns["values"];
+    $this->tbody .= "<tr id='{$columns["rowid"]}' {$columns["rowclass"]}>";
 
-    $this->tbody .= "<tr id='$values[0]' {$columns["class"]}><td>" .
-                    implode("</td><td>", array_slice($values, 1)) . 
-                    "</td>" .
-                    "<td>{$columns["note"]}</td>" .
-                    "</tr>";
+    foreach ($columns["values"] as $cell)
+    {
+      $this->tbody .= "<td {$cell['class']}>{$cell['data']}</td>";
+    }
+    
+    $this->tbody .= "</tr>";
   }
   
   // Возвращает готовую разметку таблицы.

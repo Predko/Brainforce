@@ -13,7 +13,7 @@ include "DataTables/transformer.php";
 
 try
 {
-  $mysql = $GLOBALS["config"]["mysql"];
+  $mysql = $_SESSION["config"]["mysql"];
   
   $database = new Database($mysql["host"], $mysql["dbname"], $mysql["username"], $mysql["password"]);
 
@@ -26,9 +26,9 @@ try
   {
     $database->CreateTable($transformerCreateTable);
   }
-
-  // Извлекаем данные из файла с прайсом.
-  $priceData = new PriceData($GLOBALS["config"]["priceFileName"]);
+  
+    // Извлекаем данные из файла с прайсом.
+  $priceData = new PriceData($_SESSION["config"]["priceFileName"]);
 
   $data = $priceData->GetData();
 
@@ -42,6 +42,7 @@ finally
 {
   $database = null;
 }
+
 header ('Location: price.php');
 exit();
 

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="/Styles/Site.css" />
   <title><?= $title ?></title>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="/Styles/Site.css" />
 </head>
 <body>
   <header class="header">
@@ -27,5 +28,6 @@
           <p>Разработано Предко Виктором. 2021 г.</p>
       </div>
   </footer>
+  <script src="js\SubmitForm.js"></script>
 </body>
  </html>

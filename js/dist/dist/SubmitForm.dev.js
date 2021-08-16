@@ -1,42 +1,54 @@
+"use strict";
+
 // Access the form element...
-var form = document.getElementById("filter-form");
-// ...and take over its submit event.
+var form = document.getElementById("filter-form"); // ...and take over its submit event.
+
 form.addEventListener("submit", function (event) {
-    submitForm()
-        .then(function (data) { return console.log(data); })["catch"](function (error) { return console.log(error); });
-    event.preventDefault();
-});
+  var xhr = new XMLHttpRequest(); // Set up our request
+
+  xhr.open("POST", "price.php"); // The data sent is what the user provided in the form
+
+  fd = new FormData(form);
+  fd.append("aaa", "bbb");
+  xhr.send(fd);
+  event.preventDefault();
+}); // submitForm()
+// .then(data => console.log(data))
+// .catch(error => console.log(error));
+
 function submitForm() {
-    return new Promise(function (resolve, reject) {
-        var xhr = new XMLHttpRequest();
-        // Define what happens on successful data submission
-        xhr.onload =
-            function (event) {
-                if (xhr.status < 400) {
-                    return resolve(xhr.response);
-                }
-                else {
-                    return reject(new Error(xhr.statusText));
-                }
-            };
-        // Define what happens in case of error
-        xhr.onerror = function (event) {
-            return reject(new Error('Oops! Something went wrong.'));
-        };
-        // xhr.onreadystatechange = function() {
-        //     if( xhr.readyState==4 && xhr.status==200 ){
-        //         console.log( xhr.responseText );
-        //     }
-        // };
-        xhr.open('POST', '/price.php');
-        // // Bind the FormData object and the form element
-        var FD = new FormData(form);
-        // Set up our request
-        // The data sent is what the user provided in the form
-        xhr.send(FD);
+  return new Promise(function (resolve, reject) {
+    var xhr = new XMLHttpRequest(); // Define what happens on successful data submission
+
+    xhr.onload = function (event) {
+      //alert(this.response);
+      if (xhr.status < 400) {
+        return resolve(xhr.response);
+      } else {
+        return reject(new Error(xhr.statusText));
+      }
+    }; // Define what happens in case of error
+
+
+    xhr.onerror = function (event) {
+      return reject(new Error('Oops! Something went wrong.'));
+    }; // Bind the FormData object and the form element
+
+
+    var FD = new FormData(form);
+    var object = {};
+    FD.forEach(function (value, key) {
+      return object[key] = value;
     });
-}
-// XHR.onprogress = function (event)
+    var json = JSON.stringify(object);
+    console.log(json); // Set up our request
+
+    xhr.open("POST", "/price.php", true); //xhr.setRequestHeader("Content-type", "multipart/form-data");
+    // The data sent is what the user provided in the form
+
+    xhr.send(FD);
+  });
+} // XHR.onprogress = function (event)
 // {
 //     if (event.lengthComputable)
 //     {

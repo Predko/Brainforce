@@ -1,53 +1,86 @@
 
 // Access the form element...
-const form = <HTMLFormElement>document.getElementById("formId");
+const form = <HTMLFormElement>document.getElementById("filter-form");
 
 // ...and take over its submit event.
 form.addEventListener("submit", function (event)
 {
-    event.preventDefault();
-
     submitForm()
-        .then(alert)
-        .catch(alert);
+    .then(data => ChangeTable(<string>data))
+    .catch(error => console.log(error));
+    
+    event.preventDefault();
 });
-
 
 function submitForm()
 {
     return new Promise((resolve, reject) =>
     {
 
-        const XHR = new XMLHttpRequest();
-
-        // Bind the FormData object and the form element
-        const FD = new FormData(form);
-
+        const xhr = new XMLHttpRequest();
+        
         // Define what happens on successful data submission
-        XHR.addEventListener("load", function (event)
+        xhr.onload = () =>
         {
-            if (this.status == 200)
+            if (xhr.readyState === xhr.DONE) 
             {
-                return resolve(this.response);
-            } else
-            {
-                return reject(new Error(this.statusText));
-            }
-        });
+                if (xhr.status < 400) 
+                {
+                    return resolve(xhr.responseText);
+                }
+                else
+                {
+                    return reject(new Error(xhr.statusText));
+                }
+            } 
+        }
 
         // Define what happens in case of error
-        XHR.addEventListener("error", function (event)
+        xhr.onerror = () =>
         {
             return reject(new Error('Oops! Something went wrong.'));
-        });
+        }
 
+        // xhr.onreadystatechange = function() {
+        //     if( xhr.readyState==4 && xhr.status==200 ){
+        //         console.log( xhr.responseText );
+        //     }
+        // };
+        
+        xhr.open('POST', '/price.php');
+        // // Bind the FormData object and the form element
+        let FD = new FormData(form);
+
+        FD.append("JSrequest", "yes");
+        
         // Set up our request
-        XHR.open("POST", "/customers/edit/submit");
 
         // The data sent is what the user provided in the form
-        XHR.send(FD);
+        xhr.send(FD);
     });
 }
+
+function ChangeTable(text: string)
+{
+    if (text.trim() == "NoChanged")
+    {   
+        // Изменения не требуются.
+        return;
+    }
+
+    let tableContainer = <HTMLTableElement>document.getElementById("table-container");
+
+    if (tableContainer != null)
+    {
+        tableContainer.innerHTML = text;
+    }
+    else
+    {
+        console.log("Нет контейнера для таблицы.");
+    }
+}
+
+
 
 // XHR.onprogress = function (event)
     // {
