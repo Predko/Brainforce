@@ -1,18 +1,24 @@
 
-// Access the form element...
-const form = <HTMLFormElement>document.getElementById("filter-form");
+let form: HTMLFormElement;
 
-form.addEventListener("blur", (event) => LostFocus(event), true);
+function ready() {
+    // Access the form element...
+    form = <HTMLFormElement>document.getElementById('filter-form');
 
-// ...and take over its submit event.
-form.addEventListener("submit", function (event)
-{
-    submitForm()
-    .then(data => ChangeTable(<string>data))
-    .catch(error => console.log(error));
-    
-    event.preventDefault();
-});
+    form.addEventListener("blur", (event) => LostFocus(event), true);
+
+    // ...and take over its submit event.
+    form.addEventListener("submit", function (event)
+    {
+        submitForm()
+        .then(data => ChangeTable(<string>data))
+        .catch(error => console.log(error));
+        
+        event.preventDefault();
+    });
+}
+
+document.addEventListener("DOMContentLoaded", ready);
 
 function submitForm()
 {
@@ -105,6 +111,12 @@ function LostFocus(event:FocusEvent)
         {
             let min = parseFloat(input.min);
             let max = parseFloat(input.max);
+
+            console.log(
+                "\nmin = " + min +
+                "\nmax = " + max +
+                "\nvalue = " + value + 
+                "\nname = " + input.name);
 
             if (!value || value === null || value.trim().length == 0)
             {

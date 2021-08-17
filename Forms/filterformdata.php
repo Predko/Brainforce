@@ -19,9 +19,5 @@ if (!isSet($_SESSION['filter-form']))
 
     $_SESSION['filter-form'] = $filterForm;
 }
-else
-{
-    $filterForm = $_SESSION['filter-form'];
-}
 
 ?>

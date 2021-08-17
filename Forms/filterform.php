@@ -55,7 +55,7 @@ function GetFilterForm($min, $max):string
         <option value='more'$moreOrLessSelected[1]>более</option>
         <option value='less'$moreOrLessSelected[2]>менее</option>
         </select>
-        <input name='amount' type='number' min='0' max='999' value='{$filterForm["amount"]}'>
+        <input name='amount' type='number' min='0' max='999' value='{$filterForm['amount']}'>
         штук.
         <input type='submit' value='Показать товары'>
     </form>

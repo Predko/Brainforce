@@ -15,11 +15,17 @@
 
   --border-color-table: rgb(131, 72, 18);
 
+  --height-body: 98vh;
   --height-footer: 3rem;
   --height-header: 3rem;
-  --height-main: calc(100vh - var(--height-footer) - var(--height-header));
+  --height-main: calc(var(--height-body) - var(--height-footer) - var(--height-header));
   --height-filter-form-container: 2rem;
   --height-table-container: calc(var(--height-main) - var(--height-filter-form-container));
+
+  --width-body: 98vw;
+
+  --margin-left-body: 1vw;
+  --margin-top-body: 1vh;
 } 
  
  *,
@@ -27,29 +33,33 @@
  *::after {
      box-sizing: border-box;
      margin: 0;
+     padding: 0;
  }
  
- body {
+body {
   display: flex;
   flex-direction: column;
   background-color: var(--background-color-body);
-  width: 100%;
-  margin: 0;
+  width: var(--width-body);
+  height: var(--height-body);
+  margin-left: var(--margin-left-body);
+  margin-top: var(--margin-top-body);
 }
 
 main {
   height: var(--height-main);
-  width: 100vw;
+  width: var(--width-body);
+  margin: 0;
 }
 
 footer {
   height: var(--height-footer);
-  width: 100%;
+  width: var(--width-body);
 }
 
 header {
   height: var(--height-header);
-  width: 100%;
+  width: var(--width-body);
 }
 
 footer,
@@ -151,6 +161,7 @@ section.main-page {
   height: var(--height-table-container);
   border: 2px solid var(--border-color-table);
   flex: 1;
+  margin: 0;
 }
 
 table.price {

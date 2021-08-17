@@ -28,6 +28,11 @@
           <p>Разработано Предко Виктором. 2021 г.</p>
       </div>
   </footer>
-  <script src="js\SubmitForm.js"></script>
+  <?php 
+    if (isset($scripts))
+    { 
+      echo $scripts;
+    }
+  ?>
 </body>
  </html>

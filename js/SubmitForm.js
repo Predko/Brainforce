@@ -1,14 +1,19 @@
 "use strict";
-// Access the form element...
-var form = document.getElementById("filter-form");
-form.addEventListener("blur", function (event) { return LostFocus(event); }, true);
-// ...and take over its submit event.
-form.addEventListener("submit", function (event) {
-    submitForm()
-        .then(function (data) { return ChangeTable(data); })
-        .catch(function (error) { return console.log(error); });
-    event.preventDefault();
-});
+var form;
+function ready() 
+{
+    // Access the form element...
+    form = document.getElementById('filter-form');
+    form.addEventListener("blur", function (event) { return LostFocus(event); }, true);
+    // ...and take over its submit event.
+    form.addEventListener("submit", function (event) {
+        submitForm()
+            .then(function (data) { return ChangeTable(data); })
+            .catch(function (error) { return console.log(error); });
+        event.preventDefault();
+    });
+}
+document.addEventListener("DOMContentLoaded", ready);
 function submitForm() {
     return new Promise(function (resolve, reject) {
         var xhr = new XMLHttpRequest();
@@ -69,6 +74,10 @@ function LostFocus(event) {
         if (input.name === 'min' || input.name === 'max' || input.name === 'amount') {
             var min = parseFloat(input.min);
             var max = parseFloat(input.max);
+            console.log("\nmin = " + min +
+                "\nmax = " + max +
+                "\nvalue = " + value +
+                "\nname = " + input.name);
             if (!value || value === null || value.trim().length == 0) {
                 switch (input.name) {
                     case 'min':
