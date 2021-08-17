@@ -2,6 +2,8 @@
 // Access the form element...
 const form = <HTMLFormElement>document.getElementById("filter-form");
 
+form.addEventListener("blur", (event) => LostFocus(event), true);
+
 // ...and take over its submit event.
 form.addEventListener("submit", function (event)
 {
@@ -40,6 +42,14 @@ function submitForm()
         {
             return reject(new Error('Oops! Something went wrong.'));
         }
+
+// xhr.onprogress = function(event) {
+//   if (event.lengthComputable) {
+//     alert(`Получено ${event.loaded} из ${event.total} байт`);
+//   } else {
+//     alert(`Получено ${event.loaded} байт`); // если в ответе нет заголовка Content-Length
+//   }
+
 
         // xhr.onreadystatechange = function() {
         //     if( xhr.readyState==4 && xhr.status==200 ){
@@ -80,47 +90,49 @@ function ChangeTable(text: string)
     }
 }
 
+function LostFocus(event:FocusEvent) 
+{
+    const field = <HTMLElement>event.target;
 
+    if (field.tagName.toUpperCase() === 'INPUT')
+    {
+        const input = <HTMLInputElement>field;
 
-// XHR.onprogress = function (event)
-    // {
-    //     if (event.lengthComputable)
-    //     {
-    //         alert(`Получено ${event.loaded} из ${event.total} байт`);
-    //     } else
-    //     {
-    //         alert(`Получено ${event.loaded} байт`); // если в ответе нет заголовка Content-Length
-    //     }
-    // }
+        // Ограничиваем длину введённой строки 10-ю числами.
+        const value = input.value.trim().substr(0, 10);
 
-//     // 1. Создаём новый XMLHttpRequest-объект
-// let xhr = new XMLHttpRequest();
+        if(input.name === 'min' || input.name === 'max' || input.name === 'amount')
+        {
+            let min = parseFloat(input.min);
+            let max = parseFloat(input.max);
 
-// // 2. Настраиваем его: POST-запрос по URL /article/.../load
-// xhr.open('POST', '/customers/edit/submit');
-
-// // 3. Отсылаем запрос
-// xhr.send();
-
-// // 4. Этот код сработает после того, как мы получим ответ сервера
-// xhr.onload = function() {
-//   if (xhr.status != 200) { // анализируем HTTP-статус ответа, если статус не 200, то произошла ошибка
-//     alert(`Ошибка ${xhr.status}: ${xhr.statusText}`); // Например, 404: Not Found
-//   } else { // если всё прошло гладко, выводим результат
-//     alert(`Готово, получили ${xhr.response.length} байт`); // response -- это ответ сервера
-//   }
-// };
-
-// xhr.onprogress = function(event) {
-//   if (event.lengthComputable) {
-//     alert(`Получено ${event.loaded} из ${event.total} байт`);
-//   } else {
-//     alert(`Получено ${event.loaded} байт`); // если в ответе нет заголовка Content-Length
-//   }
-
-// };
-
-// xhr.onerror = function() {
-//   alert("Запрос не удался");
-// };
-
+            if (!value || value === null || value.trim().length == 0)
+            {
+                switch (input.name) 
+                {
+                    case 'min':
+                        input.value = input.min;
+                        break;
+                        
+                    case 'max':
+                        input.value = input.max;
+                        break;
+                        
+                    case 'amount':
+                        input.value = "20";
+                        break;
+                }
+            }
+            else
+            if (parseFloat(value) < min)
+            {
+                input.value = input.min;
+            }
+            else
+            if (parseFloat(value) > max)
+            {
+                input.value = input.max;
+            }
+        }
+    }
+}

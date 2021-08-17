@@ -45,6 +45,7 @@ function GetFilterForm($min, $max):string
         <option value='wholesale' $typeSelected[1]>Оптовая цена</option>
         </select>
         от 
+    
         <input name='min' type='number' min='$min' max='$max' value='{$filterForm['minPrice']}'>
         до 
         <input name='max' type='number' min='$min' max='$max' value='{$filterForm['maxPrice']}'>

@@ -17,6 +17,7 @@ include_once "Forms/filterform.php";
 
 $isChanged = 0;
 
+//При вводе неправильного значения в фильтр устанавливать минимальное или максимальное.
 if (isset($_POST["type"]) && $filterForm['typePrice'] != $_POST["type"])
 {
   $filterForm['typePrice'] = $_POST["type"];

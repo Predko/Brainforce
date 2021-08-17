@@ -1,6 +1,8 @@
 <?php
 
 include_once "startup.php";
+require_once "classes/FilterForm.php";
+
 
 if (!isSet($_SESSION['filter-form']))
 {
@@ -21,4 +23,5 @@ else
 {
     $filterForm = $_SESSION['filter-form'];
 }
+
 ?>
