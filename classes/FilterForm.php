@@ -76,22 +76,22 @@ class FilterForm implements ArrayAccess
     }
 
     // Реализация ArrayAccess.
-    public function offsetExists(mixed $offset): bool
+    public function offsetExists($offset): bool
     {
         return isset($this->{$offset});
     }
 
-    public function offsetGet(mixed $offset): mixed
+    public function offsetGet($offset): string
     {
         return isset($this->{$offset}) ? $this->{$offset} : null;
     }
 
-    public function offsetSet(mixed $offset, mixed $value): void
+    public function offsetSet($offset, $value): void
     {
         $this->{"Set_".$offset}($value);
     }
 
-    public function offsetUnset(mixed $offset): void
+    public function offsetUnset($offset): void
     {
         unset($this->{$offset});
     }
